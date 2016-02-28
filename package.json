@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "graphql": "^0.4.18"
+  }
+}
