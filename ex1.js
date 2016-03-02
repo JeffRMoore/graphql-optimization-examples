@@ -36,6 +36,9 @@ var schema = new graphql.GraphQLSchema({
                     id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
+                    var fieldPlans = info.completionPlan.fieldPlans;
+                    var fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
+                    console.log('Reading ', info.fieldName, ' from ', info.parentType.name, ' with ', fields);
                     return data[args.id];
                 }
             }
@@ -49,11 +52,12 @@ var promise = graphql.graphql(
     `
     {
       hombre:user(id: "1") {
+      id
         ...NameFrag
       }
     }
     fragment NameFrag on User {
-        name
+        nombre:name
     }
     `,
     rootValue
