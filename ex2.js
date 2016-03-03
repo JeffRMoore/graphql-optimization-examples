@@ -27,17 +27,17 @@ var schema = new graphql.GraphQLSchema({
     query: new graphql.GraphQLObjectType({
         name: 'Query',
         fields: {
-            user: {
-                type: userType,
+            users: {
+                type: new graphql.GraphQLList(userType),
                 args: {
-                    id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
-                    var fieldPlans = info.completionPlan.fieldPlans;
+                    var fieldPlans = info.completionPlan.completionPlan.fieldPlans;
                     var fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
-                    console.log('RESOLVING', info.fieldName, 'on', info.parentType.name);
+                    console.log('RESOLVING', info.fieldName, 'on', info.parentType.name, 'as a list');
                     console.log( '    with fields', fields);
-                    return data[args.id];
+
+                    return Object.keys(data).map(key => data[key]);
                 }
             }
         }
@@ -49,13 +49,9 @@ var promise = graphql.graphql(
     schema,
     `
     {
-      hombre:user(id: "1") {
-      id
-        ...NameFrag
+      users {
+        name
       }
-    }
-    fragment NameFrag on User {
-        nombre:name
     }
     `,
     rootValue
