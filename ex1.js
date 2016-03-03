@@ -7,13 +7,13 @@ var data = {
     },
     "2": {
         "id": "2",
-        "name": "Lee"
-    },
-    "3": {
-        "id": "3",
-        "name": "Nick"
-    }
-};
+                "name": "Lee"
+            },
+            "3": {
+                "id": "3",
+                "name": "Nick"
+            }
+        };
 
 var userType = new graphql.GraphQLObjectType({
     name: 'User',
@@ -33,10 +33,11 @@ var schema = new graphql.GraphQLSchema({
                     id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
-                    var fieldPlans = info.completionPlan.fieldPlans;
-                    var fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
-                    console.log('RESOLVING', info.fieldName, 'on', info.parentType.name);
+                    var fields = Object.keys(info.completionPlan.fieldList);
+
+                    console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name);
                     console.log( '    with fields', fields);
+
                     return data[args.id];
                 }
             }

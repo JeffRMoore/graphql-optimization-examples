@@ -3,44 +3,32 @@ var graphql = require('graphql');
 var data = {
     "1": {
         "id": "1",
-        "name": "Dan",
-        "location": {
-            "city": "London",
-            "country": "England"
-        }
+        "name": "Dan"
     },
     "2": {
         "id": "2",
-        "name": "Lee",
-        "location": {
-            "city": "Paris",
-            "country": "France"
-        }
+        "name": "Lee"
     },
     "3": {
         "id": "3",
-        "name": "Nick",
-        "location": {
-            "city": "Berlin",
-            "country": "Germany"
-        }
+        "name": "Nick"
     }
 };
-
-var locationType = new graphql.GraphQLObjectType({
-    name: 'Location',
-    fields: {
-        city: { type: graphql.GraphQLString },
-        country: { type: graphql.GraphQLString }
-    }
-});
 
 var userType = new graphql.GraphQLObjectType({
     name: 'User',
     fields: {
         id: { type: graphql.GraphQLString },
         name: { type: graphql.GraphQLString },
-        location: { type: locationType }
+        double: {
+            type: graphql.GraphQLInt,
+            args: {
+                num: { type: graphql.GraphQLInt }
+            },
+            resolve: function (source, args, info) {
+                return args['num'] * 2;
+            }
+        }
     }
 });
 
@@ -59,15 +47,13 @@ var schema = new graphql.GraphQLSchema({
                     console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name);
                     console.log( '    with fields', userFields);
 
-                    if (info.completionPlan.fieldList['location']) {
-                        var subTypeAliases = info.completionPlan.fieldList['location'];
-                        subTypeAliases.forEach(alias => {
+                    if (info.completionPlan.fieldList['double']) {
+                        var subTypeAliases = info.completionPlan.fieldList['double'];
+                        var fieldArgs = subTypeAliases.map(alias => {
                             var fieldPlan = info.completionPlan.fieldPlans[alias];
-                            var locationFields = Object.keys(fieldPlan.completionPlan.fieldList);
-
                             console.log('WILL RESOLVE', fieldPlan.fieldName, 'on', fieldPlan.parentType.name);
-                            console.log( '    with fields', locationFields);
-                        })
+                            console.log( '    with arguments', fieldPlan.args);
+                        });
                     }
 
                     return data[args.id];
@@ -83,9 +69,9 @@ var promise = graphql.graphql(
     `
     {
       user(id: "1") {
-          where: location {
-            city
-          }
+          name
+          twenty: double(num: 10)
+          forty: double(num: 20)
        }
     }
     `,

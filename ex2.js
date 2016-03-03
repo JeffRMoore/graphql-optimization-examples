@@ -32,9 +32,9 @@ var schema = new graphql.GraphQLSchema({
                 args: {
                 },
                 resolve: function (source, args, info) {
-                    var fieldPlans = info.completionPlan.completionPlan.fieldPlans;
-                    var fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
-                    console.log('RESOLVING', info.fieldName, 'on', info.parentType.name, 'as a list');
+                    var fields = Object.keys(info.completionPlan.completionPlan.fieldList);
+
+                    console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name, 'as a list');
                     console.log( '    with fields', fields);
 
                     return Object.keys(data).map(key => data[key]);

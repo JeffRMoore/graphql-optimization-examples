@@ -66,17 +66,17 @@ var schema = new graphql.GraphQLSchema({
                 args: {
                 },
                 resolve: function (source, args, info) {
-                    var fieldPlans, fields;
+                    console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name, 'as a list');
 
-                    console.log('RESOLVING', info.fieldName, 'on', info.parentType.name, 'as a list');
+                    const personFields = Object.keys(
+                        info.completionPlan.completionPlan.selectionPlansByType.Person.fieldList
+                    );
+                    console.log( '    with fields', personFields, ' for Person');
 
-                    fieldPlans = info.completionPlan.completionPlan.selectionPlansByType.Person.fieldPlans;
-                    fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
-                    console.log( '    with fields', fields, ' for Person');
-
-                    fieldPlans = info.completionPlan.completionPlan.selectionPlansByType.Pet.fieldPlans;
-                    fields = Object.keys(fieldPlans).map(key => fieldPlans[key].fieldName);
-                    console.log( '    with fields', fields, ' for Pet');
+                    const petFields = Object.keys(
+                        info.completionPlan.completionPlan.selectionPlansByType.Pet.fieldList
+                    );
+                    console.log( '    with fields', petFields, ' for Pet');
 
                     return Object.keys(data).map(key => data[key]);
                 }
