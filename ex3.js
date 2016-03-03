@@ -90,5 +90,4 @@ var promise = graphql.graphql(
 ).then( result => {
     console.log('RESULT:')
     console.log(result.data);
-    console.log(result.error);
 });
