@@ -35,11 +35,11 @@ const schema = new graphql.GraphQLSchema({
           id: { type: graphql.GraphQLString }
         },
         resolve: (source, args, info) => {
-          const fields = Object.keys(info.completionPlan.fieldPlans);
+          const fieldNames = Object.keys(info.returned.fields);
 
           console.log('WILL RESOLVE',
             info.fieldName, 'on', info.parentType.name);
-          console.log( '    with fields', fields);
+          console.log( '    with fields', fieldNames);
 
           return data[args.id];
         }

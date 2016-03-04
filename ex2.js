@@ -33,13 +33,13 @@ const schema = new graphql.GraphQLSchema({
         type: new graphql.GraphQLList(userType),
         args: {},
         resolve: (source, args, info) => {
-          const fields = Object.keys(
-            info.completionPlan.elementPlan.fieldPlans
+          const fieldNames = Object.keys(
+            info.returned.listElement.fields
           );
 
           console.log('WILL RESOLVE',
             info.fieldName, 'on', info.parentType.name, 'as a list');
-          console.log( '    with fields', fields);
+          console.log( '    with fields', fieldNames);
 
           return Object.keys(data).map(key => data[key]);
         }

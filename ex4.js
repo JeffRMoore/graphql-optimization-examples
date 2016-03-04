@@ -70,18 +70,18 @@ const schema = new graphql.GraphQLSchema({
           console.log('WILL RESOLVE',
             info.fieldName, 'on', info.parentType.name, 'as a list');
 
-          const selectionPlansByType =
-            info.completionPlan.elementPlan.selectionPlansByType;
+          const typeChoices =
+            info.returned.listElement.typeChoices;
 
-          const personFields = Object.keys(
-            selectionPlansByType.Person.fieldPlans
+          const personFieldNames = Object.keys(
+            typeChoices.Person.fields
           );
-          console.log( '    with fields', personFields, ' for Person');
+          console.log( '    with fields', personFieldNames, ' for Person');
 
-          const petFields = Object.keys(
-            selectionPlansByType.Pet.fieldPlans
+          const petFieldNames = Object.keys(
+            typeChoices.Pet.fields
           );
-          console.log( '    with fields', petFields, ' for Pet');
+          console.log( '    with fields', petFieldNames, ' for Pet');
 
           return Object.keys(data).map(key => data[key]);
         }

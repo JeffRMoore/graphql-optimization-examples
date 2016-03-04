@@ -56,21 +56,22 @@ const schema = new graphql.GraphQLSchema({
           id: { type: graphql.GraphQLString }
         },
         resolve: (source, args, info) => {
-          const userFieldsPlans = info.completionPlan.fieldPlans;
-          const userFields = Object.keys(userFieldsPlans);
+          const userFields = info.returned.fields;
+          const userFieldNames = Object.keys(userFields);
 
           console.log('WILL RESOLVE',
             info.fieldName, 'on', info.parentType.name);
-          console.log( '    with fields', userFields);
+          console.log( '    with fields', userFieldNames);
 
-          if (userFieldsPlans.location) {
-            userFieldsPlans.location.forEach(fieldPlan => {
-              const locationFieldPlans = fieldPlan.completionPlan.fieldPlans;
-              const locationFields = Object.keys(locationFieldPlans);
+          if (userFields.location) {
+            userFields.location.forEach(fieldPlan => {
+              const locationFieldNames = Object.keys(
+                fieldPlan.returned.fields
+              );
 
               console.log('WILL RESOLVE',
                 fieldPlan.fieldName, 'on', fieldPlan.parentType.name);
-              console.log( '    with fields', locationFields);
+              console.log( '    with fields', locationFieldNames);
             });
           }
 

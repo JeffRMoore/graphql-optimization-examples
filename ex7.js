@@ -44,15 +44,15 @@ const schema = new graphql.GraphQLSchema({
           id: { type: graphql.GraphQLString }
         },
         resolve: (source, args, info) => {
-          const userFieldsPlans = info.completionPlan.fieldPlans;
-          const userFields = Object.keys(userFieldsPlans);
+          const userFields = info.returned.fields;
+          const userFieldNames = Object.keys(userFields);
 
           console.log('WILL RESOLVE',
             info.fieldName, 'on', info.parentType.name);
-          console.log( '    with fields', userFields);
+          console.log( '    with fields', userFieldNames);
 
-          if (userFieldsPlans.double) {
-            userFieldsPlans.double.forEach(fieldPlan => {
+          if (userFields.double) {
+            userFields.double.forEach(fieldPlan => {
               console.log('WILL RESOLVE',
                 fieldPlan.fieldName, 'on', fieldPlan.parentType.name);
               console.log( '    with arguments', fieldPlan.args);
