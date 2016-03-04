@@ -1,93 +1,98 @@
-var graphql = require('graphql');
+'use strict';
 
-var data = {
-    "1": {
-        "id": "1",
-        "kind": "pet",
-        "name": "Spot"
-    },
-    "2": {
-        "id": "2",
-        "kind": "person",
-        "name": "Lee",
-        "email": "info@example.com"
-    },
-    "3": {
-        "id": "3",
-        "kind": "person",
-        "name": "Nick",
-        "email": "info@example.com"
-    }
+const graphql = require('graphql');
+
+const data = {
+  1: {
+    id: '1',
+    kind: 'pet',
+    name: 'Spot'
+  },
+  2: {
+    id: '2',
+    kind: 'person',
+    name: 'Lee',
+    email: 'info@example.com'
+  },
+  3: {
+    id: '3',
+    kind: 'person',
+    name: 'Nick',
+    email: 'info@example.com'
+  }
 };
 
-var nameableType = new graphql.GraphQLInterfaceType({
-    name: 'Nameable',
-    fields: {
-        name: { type: graphql.GraphQLString }
-    }
+const nameableType = new graphql.GraphQLInterfaceType({
+  name: 'Nameable',
+  fields: {
+    name: { type: graphql.GraphQLString }
+  }
 });
 
-var personType = new graphql.GraphQLObjectType({
-    name: 'Person',
-    fields: {
-        id: { type: graphql.GraphQLString },
-        name: { type: graphql.GraphQLString },
-        email: { type: graphql.GraphQLString }
-    },
-    interfaces: [nameableType],
-    isTypeOf: value => value.kind == 'person'
+const personType = new graphql.GraphQLObjectType({
+  name: 'Person',
+  fields: {
+    id: { type: graphql.GraphQLString },
+    name: { type: graphql.GraphQLString },
+    email: { type: graphql.GraphQLString }
+  },
+  interfaces: [ nameableType ],
+  isTypeOf: value => value.kind === 'person'
 });
 
-var petType = new graphql.GraphQLObjectType({
-    name: 'Pet',
-    fields: {
-        id: { type: graphql.GraphQLString },
-        name: { type: graphql.GraphQLString }
-    },
-    interfaces: [nameableType],
-    isTypeOf: value => value.kind == 'pet'
+const petType = new graphql.GraphQLObjectType({
+  name: 'Pet',
+  fields: {
+    id: { type: graphql.GraphQLString },
+    name: { type: graphql.GraphQLString }
+  },
+  interfaces: [ nameableType ],
+  isTypeOf: value => value.kind === 'pet'
 });
 
-var schema = new graphql.GraphQLSchema({
-    query: new graphql.GraphQLObjectType({
-        name: 'Query',
-        fields: {
-            namedThings: {
-                type: new graphql.GraphQLList(nameableType),
-                args: {
-                },
-                resolve: function (source, args, info) {
-                    console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name, 'as a list');
+const schema = new graphql.GraphQLSchema({
+  query: new graphql.GraphQLObjectType({
+    name: 'Query',
+    fields: {
+      namedThings: {
+        type: new graphql.GraphQLList(nameableType),
+        args: {},
+        resolve: (source, args, info) => {
+          console.log('WILL RESOLVE',
+            info.fieldName, 'on', info.parentType.name, 'as a list');
 
-                    const personFields = Object.keys(
-                        info.completionPlan.elementPlan.selectionPlansByType.Person.fieldPlans
-                    );
-                    console.log( '    with fields', personFields, ' for Person');
+          const selectionPlansByType =
+            info.completionPlan.elementPlan.selectionPlansByType;
 
-                    const petFields = Object.keys(
-                        info.completionPlan.elementPlan.selectionPlansByType.Pet.fieldPlans
-                    );
-                    console.log( '    with fields', petFields, ' for Pet');
+          const personFields = Object.keys(
+            selectionPlansByType.Person.fieldPlans
+          );
+          console.log( '    with fields', personFields, ' for Person');
 
-                    return Object.keys(data).map(key => data[key]);
-                }
-            }
+          const petFields = Object.keys(
+            selectionPlansByType.Pet.fieldPlans
+          );
+          console.log( '    with fields', petFields, ' for Pet');
+
+          return Object.keys(data).map(key => data[key]);
         }
-    })
-});
-
-var rootValue = {};
-var promise = graphql.graphql(
-    schema,
-    `
-    {
-      namedThings {
-        name
       }
     }
-    `,
-    rootValue
+  })
+});
+
+const rootValue = {};
+graphql.graphql(
+  schema,
+  `
+  {
+    namedThings {
+      name
+    }
+  }
+  `,
+  rootValue
 ).then( result => {
-    console.log('RESULT:')
-    console.log(result.data);
+  console.log('RESULT:');
+  console.log(result.data);
 });
