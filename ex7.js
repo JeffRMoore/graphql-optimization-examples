@@ -42,15 +42,14 @@ var schema = new graphql.GraphQLSchema({
                     id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
-                    var userFields = Object.keys(info.completionPlan.fieldList);
+                    var userFieldsPlans = info.completionPlan.fieldPlans;
+                    var userFields = Object.keys(userFieldsPlans);
 
                     console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name);
                     console.log( '    with fields', userFields);
 
-                    if (info.completionPlan.fieldList['double']) {
-                        var subTypeAliases = info.completionPlan.fieldList['double'];
-                        var fieldArgs = subTypeAliases.map(alias => {
-                            var fieldPlan = info.completionPlan.fieldPlans[alias];
+                    if (userFieldsPlans.double) {
+                        userFieldsPlans.double.forEach(fieldPlan => {
                             console.log('WILL RESOLVE', fieldPlan.fieldName, 'on', fieldPlan.parentType.name);
                             console.log( '    with arguments', fieldPlan.args);
                         });

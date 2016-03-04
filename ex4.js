@@ -69,12 +69,12 @@ var schema = new graphql.GraphQLSchema({
                     console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name, 'as a list');
 
                     const personFields = Object.keys(
-                        info.completionPlan.elementPlan.selectionPlansByType.Person.fieldList
+                        info.completionPlan.elementPlan.selectionPlansByType.Person.fieldPlans
                     );
                     console.log( '    with fields', personFields, ' for Person');
 
                     const petFields = Object.keys(
-                        info.completionPlan.elementPlan.selectionPlansByType.Pet.fieldList
+                        info.completionPlan.elementPlan.selectionPlansByType.Pet.fieldPlans
                     );
                     console.log( '    with fields', petFields, ' for Pet');
 

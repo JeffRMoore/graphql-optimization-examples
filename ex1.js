@@ -33,7 +33,7 @@ var schema = new graphql.GraphQLSchema({
                     id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
-                    var fields = Object.keys(info.completionPlan.fieldList);
+                    var fields = Object.keys(info.completionPlan.fieldPlans);
 
                     console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name);
                     console.log( '    with fields', fields);

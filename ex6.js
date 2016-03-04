@@ -54,20 +54,19 @@ var schema = new graphql.GraphQLSchema({
                     id: { type: graphql.GraphQLString }
                 },
                 resolve: function (source, args, info) {
-                    var userFields = Object.keys(info.completionPlan.fieldList);
+                    var userFieldsPlans = info.completionPlan.fieldPlans;
+                    var userFields = Object.keys(userFieldsPlans);
 
                     console.log('WILL RESOLVE', info.fieldName, 'on', info.parentType.name);
                     console.log( '    with fields', userFields);
 
-                    if (info.completionPlan.fieldList['location']) {
-                        var subTypeAliases = info.completionPlan.fieldList['location'];
-                        subTypeAliases.forEach(alias => {
-                            var fieldPlan = info.completionPlan.fieldPlans[alias];
-                            var locationFields = Object.keys(fieldPlan.completionPlan.fieldList);
+                    if (userFieldsPlans.location) {
+                        userFieldsPlans.location.forEach(fieldPlan => {
+                            var locationFields = Object.keys(fieldPlan.completionPlan.fieldPlans);
 
                             console.log('WILL RESOLVE', fieldPlan.fieldName, 'on', fieldPlan.parentType.name);
                             console.log( '    with fields', locationFields);
-                        })
+                        });
                     }
 
                     return data[args.id];

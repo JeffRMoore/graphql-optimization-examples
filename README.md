@@ -80,10 +80,10 @@ RESULT:
 ## Example 6
 
 This example demonstrates looking ahead across GraphQLObjectType boundaries as one might
-using dependant objects or a document oriented data store.
+using dependant objects, or a join or a document oriented data store.
 
-It is a little more complicated here to cross layers because of potential aliasing and
-the potential to include a field more than once.
+Because fields may be resolved more than once, we have to iterate through the list of
+resolvers for a specific field.
 
 OUTPUT:
 
@@ -100,8 +100,8 @@ RESULT:
 
 This example demonstrates looking ahead into a field with arguments.
 
-Again, there is complexity since the same field may appear more than once in a selection with
-different arguments.
+Because fields may be resolved more than once, we have to iterate through the list of
+resolvers for a specific field.
 
 OUTPUT:
 
